@@ -1,0 +1,53 @@
+name: "litellm"
+
+networks:
+  litellm-net:
+    driver: bridge
+
+services:
+  ghc-proxy:
+    image: litellm/litellm:v1.83.10-stable
+    container_name: litellm-proxy
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:36799:36799"
+    environment:
+      - LOG_LEVEL=DEBUG
+      - ENABLE_NETWORK_MONITOR=true
+      - DOCS_URL=/docs
+      - ROOT_REDIRECT_URL=/ui
+      - STORE_MODEL_IN_DB=true
+    env_file:
+      - .env
+    volumes:
+      - ./conf/copilot-config.yaml:/app/copilot-config.yaml
+      - ./litellm-data:/root/.config/litellm
+    command: ["--config", "/app/copilot-config.yaml", "--port", "36799"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - litellm-net
+
+  postgres:
+    image: postgres:16
+    container_name: litellm-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: litellm
+      POSTGRES_PASSWORD: litellm
+      POSTGRES_DB: litellm
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgres.conf
+    volumes:
+      - ./litellm-data/postgres:/var/lib/postgresql/data
+      - ./conf/postgres.conf:/etc/postgresql/postgres.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U litellm -d litellm"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - litellm-net
