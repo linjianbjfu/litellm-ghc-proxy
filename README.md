@@ -89,7 +89,7 @@ Please open https://github.com/login/device and enter code: XXXX-XXXX
 或手动测试：
 
 ```bash
-curl -X POST http://localhost:4000/chat/completions \
+curl -X POST http://localhost:36799/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <你的 LITELLM_MASTER_KEY>" \
   -d '{
@@ -104,22 +104,22 @@ curl -X POST http://localhost:4000/chat/completions \
 
 服务启动后，即可通过 OpenAI 兼容 API 调用：
 
-- **Base URL:** `http://localhost:4000`
+- **Base URL:** `http://localhost:36799`
 - **Chat Completions:** `POST /chat/completions`
 - **认证方式:** `Authorization: Bearer <LITELLM_MASTER_KEY>`
 
-可以在任何支持 OpenAI API 格式的客户端/工具中使用，只需将 base URL 指向 `http://localhost:4000`。
+可以在任何支持 OpenAI API 格式的客户端/工具中使用，只需将 base URL 指向 `http://localhost:36799`。
 
 ### Web 管理界面
 
-访问 http://localhost:4000/ui ，使用以下凭据登录：
+访问 http://localhost:36799/ui ，使用以下凭据登录：
 
 - **用户名:** `ImNotAdmin`
 - **密码:** `generate_env.py` 生成时输出的 Admin Password
 
 ### API 文档
 
-访问 http://localhost:4000/docs 查看 Swagger API 文档。
+访问 http://localhost:36799/docs 查看 Swagger API 文档。
 
 ## 常用命令
 
@@ -185,6 +185,6 @@ docker compose restart ghc-proxy
 
 ## 注意事项
 
-- 服务默认仅监听 `127.0.0.1:4000`，只能本机访问。如需对外暴露，请修改 `docker-compose.yml` 中的端口绑定
+- 服务默认仅监听 `127.0.0.1:36799`，只能本机访问。如需对外暴露，请修改 `docker-compose.yml` 中的端口绑定
 - `.env` 和 `litellm-data/` 包含敏感信息，已在 `.gitignore` 中排除
 - GitHub Copilot token 会过期，过期后重启服务会自动触发重新认证
