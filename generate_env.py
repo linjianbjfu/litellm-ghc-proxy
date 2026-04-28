@@ -23,6 +23,7 @@ else:
         f.write(f'LITELLM_SALT_KEY={salt_key}\n')
         f.write('UI_USERNAME=ImNotAdmin\n')
         f.write(f'UI_PASSWORD={admin_password}\n')
+        f.write('LITELLM_PORT=4000\n')
 
     print(f'Master Key: {master_key}')
     print(f'Admin Password: {admin_password}\n')

@@ -10,7 +10,7 @@ services:
     container_name: litellm-proxy
     restart: unless-stopped
     ports:
-      - "0.0.0.0:36799:36799"
+      - "0.0.0.0:${LITELLM_PORT}:${LITELLM_PORT}"
     environment:
       - LOG_LEVEL=DEBUG
       - ENABLE_NETWORK_MONITOR=true
@@ -22,7 +22,7 @@ services:
     volumes:
       - ./conf/copilot-config.yaml:/app/copilot-config.yaml
       - ./litellm-data:/root/.config/litellm
-    command: ["--config", "/app/copilot-config.yaml", "--port", "36799"]
+    command: ["--config", "/app/copilot-config.yaml", "--port", "${LITELLM_PORT}"]
     depends_on:
       postgres:
         condition: service_healthy
