@@ -12,61 +12,12 @@ general_settings:
 
 model_list:
 
-  - model_name: claude-opus-4.6
-    litellm_params:
-      model: github_copilot/claude-opus-4.6-1m
-      extra_headers: {"Editor-Version": "vscode/1.117.0", "Copilot-Integration-Id": "vscode-chat"}
-    # Claude Opus 4.6 (Anthropic) - enabled
-    # Max tokens: 32000, Context: 200000
-
   - model_name: claude-opus-4.7
     litellm_params:
       model: github_copilot/claude-opus-4.7
       extra_headers: {"Editor-Version": "vscode/1.117.0", "Copilot-Integration-Id": "vscode-chat"}
     # Claude Opus 4.7 (Anthropic) - enabled
     # Max tokens: 32000, Context: 200000
-
-  - model_name: claude-sonnet-4.6
-    litellm_params:
-      model: github_copilot/claude-sonnet-4.6
-      extra_headers: {"Editor-Version": "vscode/1.117.0", "Copilot-Integration-Id": "vscode-chat"}
-    # Claude Sonnet 4.6 (Anthropic) - enabled
-    # Max tokens: 32000, Context: 200000
-
-  - model_name: gemini-3.1-pro-preview
-    litellm_params:
-      model: github_copilot/gemini-3.1-pro-preview
-      extra_headers: {"Editor-Version": "vscode/1.117.0", "Copilot-Integration-Id": "vscode-chat"}
-    # Gemini 3.1 Pro (Google) - enabled
-    # Max tokens: 64000, Context: 200000
-
-  - model_name: gpt-5.2-codex
-    litellm_params:
-      model: github_copilot/gpt-5.2-codex
-      extra_headers: {"Editor-Version": "vscode/1.117.0", "Copilot-Integration-Id": "vscode-chat"}
-    # GPT-5.2-Codex (OpenAI) - enabled
-    # Max tokens: 128000, Context: 400000
-
-  - model_name: gpt-5.3-codex
-    litellm_params:
-      model: github_copilot/gpt-5.3-codex
-      extra_headers: {"Editor-Version": "vscode/1.117.0", "Copilot-Integration-Id": "vscode-chat"}
-    # GPT-5.3-Codex (OpenAI) - enabled
-    # Max tokens: 128000, Context: 400000
-
-  - model_name: gpt-5.4-mini
-    litellm_params:
-      model: github_copilot/gpt-5.4-mini
-      extra_headers: {"Editor-Version": "vscode/1.117.0", "Copilot-Integration-Id": "vscode-chat"}
-    # GPT-5.4 mini (OpenAI) - enabled
-    # Max tokens: 128000, Context: 400000
-
-  - model_name: gpt-5.4
-    litellm_params:
-      model: github_copilot/gpt-5.4
-      extra_headers: {"Editor-Version": "vscode/1.117.0", "Copilot-Integration-Id": "vscode-chat"}
-    # GPT-5.4 (OpenAI) - enabled
-    # Max tokens: 128000, Context: 400000
 
   - model_name: gpt-5.5
     litellm_params:
@@ -130,13 +81,6 @@ model_list:
       extra_headers: {"Editor-Version": "vscode/1.117.0", "Copilot-Integration-Id": "vscode-chat"}
     # Claude Haiku 4.5 (Anthropic) - enabled
     # Max tokens: 64000, Context: 200000
-
-  - model_name: gemini-3-flash-preview
-    litellm_params:
-      model: github_copilot/gemini-3-flash-preview
-      extra_headers: {"Editor-Version": "vscode/1.117.0", "Copilot-Integration-Id": "vscode-chat"}
-    # Gemini 3 Flash (Preview) (Google) - enabled
-    # Max tokens: 64000, Context: 128000
 
   - model_name: gemini-2.5-pro
     litellm_params:
@@ -235,6 +179,13 @@ model_list:
       extra_headers: {"Editor-Version": "vscode/1.117.0", "Copilot-Integration-Id": "vscode-chat"}
     # GPT-4o (Azure OpenAI) - enabled
     # Max tokens: 4096, Context: 128000
+
+
+  - model_name: claude-opus-4.6
+    litellm_params:
+      model: github_copilot/claude-opus-4.6-1m
+      extra_headers: {"Editor-Version": "vscode/1.117.0", "Copilot-Integration-Id": "vscode-chat"}
+    # Claude Opus 4.6 (Anthropic) - enabled (manually added)
 
 # To use these models:
 # 1. Restart LiteLLM: make stop && make start
