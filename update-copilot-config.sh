@@ -110,7 +110,7 @@ if ! grep -q 'model_name: claude-opus-4-7$' "$CONFIG_FILE" 2>/dev/null; then
 
   - model_name: claude-opus-4-7
     litellm_params:
-      model: github_copilot/claude-opus-4.7
+      model: github_copilot/claude-opus-4.7-1m-internal
       extra_headers: {"Editor-Version": "vscode/${VSCODE_VERSION}", "Copilot-Integration-Id": "vscode-chat"}
     # Claude Opus 4.7 (Anthropic) - enabled
     # Max tokens: 32000, Context: 200000
