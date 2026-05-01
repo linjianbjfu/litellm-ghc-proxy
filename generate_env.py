@@ -24,6 +24,8 @@ else:
         f.write('UI_USERNAME=ImNotAdmin\n')
         f.write(f'UI_PASSWORD={admin_password}\n')
         f.write('LITELLM_PORT=4000\n')
+        f.write('SEARXNG_API_BASE=https://your-searxng-instance.example.com/\n')
+        f.write('TAVILY_API_KEY=tvly-your-api-key-here\n')
 
     print(f'Master Key: {master_key}')
     print(f'Admin Password: {admin_password}\n')

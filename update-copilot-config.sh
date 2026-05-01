@@ -38,29 +38,29 @@ if ! echo "$MODELS_JSON" | jq -e '.data' >/dev/null 2>&1; then
     exit 1
 fi
 
-# --- 4. Generate YAML ---
-echo "📝 Generating $CONFIG_FILE ..."
+# --- 4. Update only the model_list section ---
+echo "📝 Updating model_list in $CONFIG_FILE ..."
 
-cat > "$CONFIG_FILE" <<'HEADER'
-# GitHub Copilot Models Available
-# Usage: Copy the desired models to your copilot-config.yaml
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    echo "❌ Config file not found: $CONFIG_FILE"
+    echo "   Please create the config file first with litellm_settings and general_settings."
+    exit 1
+fi
 
-litellm_settings:
-  drop_params: true
-  max_request_size_mb: 10
-  max_response_size_mb: 20
-  disable_end_user_cost_tracking: true
+# Extract everything before "model_list:" (header) and everything after the last model entry (footer)
+HEADER_END=$(grep -n '^model_list:' "$CONFIG_FILE" | head -1 | cut -d: -f1)
+if [[ -z "$HEADER_END" ]]; then
+    echo "❌ Could not find 'model_list:' in $CONFIG_FILE"
+    exit 1
+fi
 
-general_settings:
-  database_url: postgresql://litellm:litellm@postgres:5432/litellm
+# Save header (everything up to and including "model_list:")
+head -n "$HEADER_END" "$CONFIG_FILE" > "${CONFIG_FILE}.tmp"
 
-model_list:
-HEADER
+# Find the footer: lines starting with "# To use these models:" onwards
+FOOTER_LINE=$(grep -n '^# To use these models:' "$CONFIG_FILE" | head -1 | cut -d: -f1)
 
-# Track whether claude-opus-4.6 was added from API
-HAS_CLAUDE_OPUS_46=false
-
-# Parse each chat model and append to YAML
+# Generate new model entries into temp file
 echo "$MODELS_JSON" | jq -r '.data[] | select(.capabilities.type == "chat") | @json' | while IFS= read -r model_json; do
     id=$(echo "$model_json" | jq -r '.id')
     name=$(echo "$model_json" | jq -r '.name')
@@ -75,10 +75,9 @@ echo "$MODELS_JSON" | jq -r '.data[] | select(.capabilities.type == "chat") | @j
     # Special case: claude-opus-4.6 must use the 1m variant
     if [[ "$id" == "claude-opus-4.6" ]]; then
         litellm_model="github_copilot/claude-opus-4.6-1m"
-        HAS_CLAUDE_OPUS_46=true
     fi
 
-    cat >> "$CONFIG_FILE" <<EOF
+    cat >> "${CONFIG_FILE}.tmp" <<EOF
 
   - model_name: ${id}
     litellm_params:
@@ -90,23 +89,20 @@ EOF
 done
 
 # --- 5. Ensure claude-opus-4.6 entry always exists ---
-# Check by grepping the generated file (the subshell above can't export vars)
-if ! grep -q 'model_name: claude-opus-4.6$' "$CONFIG_FILE" 2>/dev/null; then
-    echo "" >> "$CONFIG_FILE"
-    cat >> "$CONFIG_FILE" <<EOF
+if ! grep -q 'model_name: claude-opus-4.6$' "${CONFIG_FILE}.tmp" 2>/dev/null; then
+    cat >> "${CONFIG_FILE}.tmp" <<EOF
 
   - model_name: claude-opus-4.6
     litellm_params:
       model: github_copilot/claude-opus-4.6-1m
       extra_headers: {"Editor-Version": "vscode/${VSCODE_VERSION}", "Copilot-Integration-Id": "vscode-chat"}
     # Claude Opus 4.6 (Anthropic) - enabled (manually added)
-
 EOF
 fi
 
 # --- 6. Ensure claude-opus-4.7 entry always exists ---
-if ! grep -q 'model_name: claude-opus-4-7$' "$CONFIG_FILE" 2>/dev/null; then
-    cat >> "$CONFIG_FILE" <<EOF
+if ! grep -q 'model_name: claude-opus-4-7$' "${CONFIG_FILE}.tmp" 2>/dev/null; then
+    cat >> "${CONFIG_FILE}.tmp" <<EOF
 
   - model_name: claude-opus-4-7
     litellm_params:
@@ -114,17 +110,25 @@ if ! grep -q 'model_name: claude-opus-4-7$' "$CONFIG_FILE" 2>/dev/null; then
       extra_headers: {"Editor-Version": "vscode/${VSCODE_VERSION}", "Copilot-Integration-Id": "vscode-chat"}
     # Claude Opus 4.7 (Anthropic) - enabled
     # Max tokens: 32000, Context: 200000
-
 EOF
 fi
 
-# --- 7. Add footer ---
-cat >> "$CONFIG_FILE" <<'FOOTER'
+# --- 7. Append original footer ---
+if [[ -n "$FOOTER_LINE" ]]; then
+    echo "" >> "${CONFIG_FILE}.tmp"
+    tail -n +"$FOOTER_LINE" "$CONFIG_FILE" >> "${CONFIG_FILE}.tmp"
+else
+    # No footer found, add default
+    cat >> "${CONFIG_FILE}.tmp" <<'FOOTER'
 
 # To use these models:
 # 1. Restart LiteLLM: make stop && make start
 # 2. Test with: make test
 FOOTER
+fi
+
+# Replace original file
+mv "${CONFIG_FILE}.tmp" "$CONFIG_FILE"
 
 MODEL_COUNT=$(grep -c 'model_name:' "$CONFIG_FILE")
-echo "✅ Generated $CONFIG_FILE with $MODEL_COUNT models (vscode/$VSCODE_VERSION)"
+echo "✅ Updated $CONFIG_FILE with $MODEL_COUNT models (vscode/$VSCODE_VERSION)"

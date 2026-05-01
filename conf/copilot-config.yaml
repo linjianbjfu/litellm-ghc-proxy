@@ -1,11 +1,28 @@
 # GitHub Copilot Models Available
 # Usage: Copy the desired models to your copilot-config.yaml
 
+
 litellm_settings:
   drop_params: true
   max_request_size_mb: 10
   max_response_size_mb: 20
   disable_end_user_cost_tracking: true
+  callbacks:
+    - websearch_interception
+  websearch_interception_params:
+    enabled_providers:
+      - github_copilot
+    search_tool_name: tavily-search
+
+search_tools:
+  - search_tool_name: tavily-search
+    litellm_params:
+      search_provider: tavily
+      api_key: os.environ/TAVILY_API_KEY
+  - search_tool_name: searxng-search
+    litellm_params:
+      search_provider: searxng
+      api_base: os.environ/SEARXNG_API_BASE
 
 general_settings:
   database_url: postgresql://litellm:litellm@postgres:5432/litellm
@@ -201,13 +218,11 @@ model_list:
     # GPT-4o (Azure OpenAI) - enabled
     # Max tokens: 4096, Context: 128000
 
-
   - model_name: claude-opus-4.6
     litellm_params:
       model: github_copilot/claude-opus-4.6-1m
       extra_headers: {"Editor-Version": "vscode/1.118.1", "Copilot-Integration-Id": "vscode-chat"}
     # Claude Opus 4.6 (Anthropic) - enabled (manually added)
-
 
   - model_name: claude-opus-4-7
     litellm_params:
@@ -215,7 +230,6 @@ model_list:
       extra_headers: {"Editor-Version": "vscode/1.118.1", "Copilot-Integration-Id": "vscode-chat"}
     # Claude Opus 4.7 (Anthropic) - enabled
     # Max tokens: 32000, Context: 200000
-
 
 # To use these models:
 # 1. Restart LiteLLM: make stop && make start
