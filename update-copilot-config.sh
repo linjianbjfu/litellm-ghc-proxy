@@ -88,17 +88,6 @@ echo "$MODELS_JSON" | jq -r '.data[] | select(.capabilities.type == "chat") | @j
 EOF
 done
 
-# --- 5. Ensure claude-opus-4.6 entry always exists ---
-if ! grep -q 'model_name: claude-opus-4.6$' "${CONFIG_FILE}.tmp" 2>/dev/null; then
-    cat >> "${CONFIG_FILE}.tmp" <<EOF
-
-  - model_name: claude-opus-4.6
-    litellm_params:
-      model: github_copilot/claude-opus-4.6-1m
-      extra_headers: {"Editor-Version": "vscode/${VSCODE_VERSION}", "Copilot-Integration-Id": "vscode-chat"}
-    # Claude Opus 4.6 (Anthropic) - enabled (manually added)
-EOF
-fi
 
 # --- 6. Ensure claude-opus-4.7 entry always exists ---
 if ! grep -q 'model_name: claude-opus-4-7$' "${CONFIG_FILE}.tmp" 2>/dev/null; then
