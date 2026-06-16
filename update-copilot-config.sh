@@ -82,7 +82,7 @@ echo "$MODELS_JSON" | jq -r '.data[] | select(.capabilities.type == "chat") | @j
   - model_name: ${id}
     litellm_params:
       model: ${litellm_model}
-      extra_headers: {"Editor-Version": "vscode/${VSCODE_VERSION}", "Copilot-Integration-Id": "vscode-chat"}
+      extra_headers: {"Editor-Version": "vscode/${VSCODE_VERSION}"}
     # ${name} (${vendor}) - ${state}
     # Max tokens: ${max_output}, Context: ${max_context}
 EOF
@@ -96,7 +96,7 @@ if ! grep -q 'model_name: claude-opus-4-7$' "${CONFIG_FILE}.tmp" 2>/dev/null; th
   - model_name: claude-opus-4-7
     litellm_params:
       model: github_copilot/claude-opus-4.7-1m-internal
-      extra_headers: {"Editor-Version": "vscode/${VSCODE_VERSION}", "Copilot-Integration-Id": "vscode-chat"}
+      extra_headers: {"Editor-Version": "vscode/${VSCODE_VERSION}"}
     # Claude Opus 4.7 (Anthropic) - enabled
     # Max tokens: 32000, Context: 200000
 EOF
